@@ -295,7 +295,7 @@
                         
                         // 2. Setelah fade-out, sembunyikan loading screen dan tampilkan Halaman 1
                         setTimeout(() => {
-                            loadingScreen.classList.add('hidden');
+                            loadingScreen.remove();
                             goToPage(1); // Pindah ke Halaman 1
                         }, 1000); // 1 detik transisi fade-out
                         
@@ -450,6 +450,7 @@
 </body>
 
 </html>
+
 
 
 
