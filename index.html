@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun!</title>
+    <style>
+        :root {
+            --primary-color: #ff69b4; /* Pink */
+            --secondary-color: #fff0f5; /* Light Pink */
+            --text-color: #333;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .page {
+            max-width: 90%;
+            width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* --- Style Tombol --- */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff1493; /* Deep Pink */
+        }
+
+        /* Style Button Bulat */
+        .round-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px auto 0;
+            padding: 0;
+        }
+
+        /* --- Style Text --- */
+        .large-text {
+            font-size: 3.2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .medium-text {
+            font-size: 2em;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .small-text {
+            font-size: 1.2em;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* --- Style GIF/Image --- */
+        .gif {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Style Kontainer Ketikan (Halaman 4) */
+        #typing-container {
+            border: 2px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px auto;
+            text-align: center;
+            min-height: 100px;
+            overflow: hidden;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            /* JAMINAN BARIS BARU DITAMPILKAN DARI \n */
+            white-space: pre-wrap; 
+            /* Contoh font */
+            font-size: 1.2em; 
+        }
+        #typed-message {
+            display: block; /* Penting untuk centering */
+            width: 100%;
+            text-align: inherit; /* Mewarisi perataan dari parent */
+        }
+
+        /* Style Kontainer Slideshow */
+        #slideshow-container {
+            width: 100%;
+            max-width: 300px; /* Batasan lebar kontainer */
+            aspect-ratio: 9 / 16; /* Rasio potret */
+            margin: 10px auto;
+            position: relative; /* Penting untuk penempatan gambar */
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style Gambar di Slideshow */
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            position: absolute; /* Tumpuk gambar */
+            top: 0;
+            left: 0;
+            object-fit: cover;
+            opacity: 0; /* Semua disembunyikan awalnya */
+            transition: opacity 1.5s ease-in-out; /* Efek transisi halus */
+        }
+
+        .slide-image.active {
+            opacity: 1; /* Hanya yang aktif yang terlihat */
+        }
+        .full-screen-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--secondary-color);
+            z-index: 1000;
+            /* PROPERTI PENTING UNTUK MEMUSATKAN KONTEN SECARA VERTIKAL & HORIZONTAL */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Pusatkan secara Vertikal */
+            align-items: center; /* Pusatkan secara Horizontal */
+            /* Akhir Properti Pemusatan */
+            transition: opacity 1s ease-out;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* Style untuk Animasi Putar */
+        .loader {
+            border: 8px solid #f3f3f3; 
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            width: 80px; /* Diperbesar sedikit agar angka terlihat */
+            height: 80px; /* Diperbesar sedikit agar angka terlihat */
+            animation: spin 1s linear infinite;
+            /* PENTING: Untuk memposisikan angka di tengah */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Style untuk Angka Hitung Mundur */
+        #countdown-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+            /* PENTING: Memutar balik agar angka terlihat tegak */
+            animation: unspin 1s linear infinite; 
+        }
+
+        /* Definisikan Animasi Kebalikan */
+        @keyframes unspin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="page0" class="page full-screen-loader">
+        <div class="loader">
+            <span id="countdown-number">10</span> </div>
+        <p class="medium-text" style="margin-top: 50px;">Haloo, Selamat Datang Sayanggg</p>
+    </div>
+    <audio autoplay loop id="background-music">
+        <source src="Jamrud - Selamat Ulang Tahun (lyrics).mp3" type="audio/mp3">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <div id="page1" class="page">
+        <p class="large-text">Eitss, sebelum mulai</p>
+        <p class="large-text">putar musik dulu ga siiiii wkwk</p>
+        <p class="large-text">nih tekan aja</p>
+        <button id="play-music-button">🎵 MUSIIKKKKKKK</button>
+        <p id="music-status" class="small-text hidden">Oke musik sudah, lanjut yukk</p>
+        <button id="to-page2-button" class="hidden">Lanjut</button>
+    </div>
+
+    <div id="page2" class="page hidden">
+        <img src="gif pentol 4.gif" alt="Cute GIF" class="gif">
+        <p class="medium-text">Selamat Ulang Tahun Sayangku</p>
+        <p class="small-text">Mau liat ucapan Full nya ngga nih?? Kalau mau, tekan aja ini</p>
+        <button class="round-button" onclick="goToPage(3)">👉</button>
+    </div>
+
+    <div id="page3" class="page hidden">
+        <img src="gif pentol 3.gif" alt="Happy GIF" class="gif">
+        <p class="medium-text">Haloo, ciee udh ga sabar liat ucapan full nya, sihiyyy, yaudah ini beneran nih, Tekan tombol dibawah ini yaa</p>
+        <button class="round-button" onclick="goToPage(4)">🎉</button>
+    </div>
+
+    <div id="page4" class="page hidden">
+        <img src="gif pentol 5.gif" alt="Love GIF" class="gif">
+        <p class="large-text">Halooo sayanggg</p>
+        <div id="typing-container">
+            <span id="typed-message"></span>
+        </div>
+        <button id="to-page5-button" onclick="goToPage(5)" class="hidden">Halaman Terakhir nih sayang</button>
+    </div>
+
+    <div id="page5" class="page hidden">
+        <img src="gif pentol 1.gif" alt="Happy GIF" class="gif">
+        <div id="slideshow-container">
+            </div>
+        
+        <p class="large-text" style="margin-top: 30px;">Sekali lagi, Selamat Ulang Tahun Yaaaa, Kesayanganku</p>
+        <p class="large-text" style="margin-top: 30px;">MWUAHH MWUAHH MWUAHH</p>
+    </div>
+
+    <script>
+        const music = document.getElementById('background-music');
+        const playMusicBtn = document.getElementById('play-music-button');
+        const musicStatus = document.getElementById('music-status');
+        const toPage2Btn = document.getElementById('to-page2-button');
+        const countdownElement = document.getElementById('countdown-number');
+        const pages = [
+            document.getElementById('page1'),
+            document.getElementById('page2'),
+            document.getElementById('page3'),
+            document.getElementById('page4'),
+            document.getElementById('page5')
+        ];
+
+        let currentPage = 0;
+
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('page0');
+            let countdown = 10;
+            const finalDelay = 1000; // Delay setelah hitungan 1 detik sebelum fade-out
+
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown >= 1) {
+                    countdownElement.textContent = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                    // Setelah hitungan selesai (yaitu 0), lakukan transisi ke Halaman 1
+                    setTimeout(() => {
+                        // 1. Beri efek fade-out
+                        loadingScreen.style.opacity = '0';
+                        
+                        // 2. Setelah fade-out, sembunyikan loading screen dan tampilkan Halaman 1
+                        setTimeout(() => {
+                            loadingScreen.classList.add('hidden');
+                            goToPage(1); // Pindah ke Halaman 1
+                        }, 1000); // 1 detik transisi fade-out
+                        
+                    }, finalDelay);
+                }
+            }, 1000); // Ganti angka setiap 1 detik (1000ms)
+        });
+
+        // --- Fungsi Kontrol Musik ---
+        playMusicBtn.addEventListener('click', function() {
+            if (music.paused) {
+                // Perintah play() harus dipicu oleh interaksi pengguna (click), 
+                // ini sudah benar dengan tombol
+                music.play().then(() => {
+                    playMusicBtn.textContent = '⏸️ Musik Berputar (Tekan untuk Jeda)';
+                    musicStatus.classList.remove('hidden');
+                    toPage2Btn.classList.remove('hidden');
+                }).catch(error => {
+                    console.error("Gagal memutar:", error);
+                    // Tidak perlu alert, cukup tampilkan tombol selanjutnya
+                    playMusicBtn.textContent = '❌ Musik Gagal Putar. Lanjut saja!';
+                    musicStatus.classList.remove('hidden');
+                    toPage2Btn.classList.remove('hidden');
+                });
+            } else {
+                music.pause();
+                playMusicBtn.textContent = '🎵 Tekan Play Musik';
+            }
+        });
+
+        // --- Fungsi Pindah Halaman ---
+        function goToPage(pageNumber) {
+            // Sembunyikan semua halaman
+            pages.forEach(p => p.classList.add('hidden'));
+            
+            // Tampilkan halaman yang dituju
+            pages[pageNumber - 1].classList.remove('hidden');
+            currentPage = pageNumber;
+            
+            if (pageNumber === 4) {
+                startTypingEffect();
+            }
+        }
+        
+        // Tambahkan fungsi pindah halaman untuk tombol di Halaman 1
+        toPage2Btn.onclick = () => goToPage(2);
+        
+        // --- Efek Ketikan (Halaman 4) ---
+        // UCAPAN ROMANTIS (Anda bisa ganti ini)
+        // UCAPAN ROMANTIS (Sudah diisi dengan teks Anda, menggunakan \n)
+        const message = "Selamat ulang tahun untukmu, Sayang.\n\n Hari ini, di tanggal yang indah ini, kita merayakan bukan hanya bertambahnya usiamu, tetapi juga merayakan hadirnya dirimu yang luar biasa di dunia ini.\n Sulit rasanya merangkai kata-kata yang bisa sepenuhnya menggambarkan betapa berartinya dirimu di hidup aku.\n\n Kamu adalah anugerah, sebuah cahaya yang tak pernah padam, sumber kehangatan yang tak tergantikan.\n\n\nSejenak, mari kita liat kembali perjalanan yang telah kamu lalui. Setiap tahun, setiap bulan, setiap hari, kamu telah berhasil membuatku tak bisa berhenti memikirkanmu. \nKamu telah melewati berbagai tantangan dengan ketabahan yang mengagumkan, meraih setiap pencapaian dengan kerja keras yang patut diacungi jempol (100 jempol deh hehe), dan menghadapi setiap perubahan dengan hati yang lapang. \n\nMelihat semua itu, aku hanya bisa merasakan rasa bangga dan syukur yang mendalam.\n\n\nAku masih ingat dengan jelas momen-momen dan kenangan indah yang tak terlupakan bersamamu. Kenangan-kenangan itulah yang membentuk jalinan hubungan kita menjadi begitu istimewa dan kokoh. \n\nKau bukan hanya sekadar pacar, tetapi juga tempat curhat terbaik, tempat pulang ternyaman, tempat berteduh terindah, tempat bersandar terbaik, dan lainnya.\n\n\nDi usiamu yang baru ini, aku mendoakan agar Allah SWT senantiasa melimpahkan rahmat, hidayah, dan keberkahan-Nya dalam setiap tarikan napas dan setiap langkahmu. \nSemoga usia yang bertambah ini membawa serta kedewasaan yang semakin matang, kebijaksanaan dalam mengambil keputusan, serta ketenangan hati dalam menghadapi segala dinamika kehidupan.\n\nJangan pernah berhenti bermimpi, jangan pernah lelah untuk berjuang. Dunia ini menantimu untuk dijelajahi (kalau boleh, sama aku ya jelajahinnya :v). Teruslah menjadi pribadi yang rendah hati, yang tak pernah sungkan untuk menolong sesama, dan yang senantiasa menebarkan energi positif di sekelilingmu.(Kalau aku protes, Jelasin baik baik ya hehe)\n\n\nJika suatu saat kamu merasa lelah, ingatlah bahwa ada aku yang selalu siap mendengarkan, merangkul, dan memberikan semangat untuk kamu. \nGapapa kok untuk beristirahat sejenak. Karena bahkan di saat paling rapuh pun, kamu tetap berusaha untuk kuat.\n\n\nSemoga di tahun ini, semua doa, harapan, dan cita-cita terbaikmu yang selama ini tersimpan rapih di dalam hati akan mulai terwujud satu per satu. \nSemoga rezeki yang melimpah, kesehatan yang selalu hadir, dan kebahagiaan yang senantiasa menjadi teman setiamu.\n\n\nDan juga, mau nyelipin doa buat aku juga, semoga aku murah rezeki, lancar rezeki biar bisa segera siap untuk menghalalkan kamuuuu hehe, numpang tarok doa sikit :v AAMIIN.\n\n\nSekali lagi, selamat ulang tahun. Rayakan hari ini dengan penuh sukacita, karena ini adalah hari untuk merayakan dirimu, sebuah mahakarya Tuhan yang sungguh sempurna. Terima kasih karena telah hadir dan mewarnai hidupku.\n\nAku berikan cinta, kasih sayang, dan doa tulus,\nDari lubuk hati yang terdalam,\n\nPacal kamuu, Aditya Firmansyah yang ganteng gelooookkkkkkk";
+        
+        const typedMessageElement = document.getElementById('typed-message');
+        const toPage5Btn = document.getElementById('to-page5-button');
+        let index = 0;
+        const charsPerStep = 1; // Jumlah karakter yang muncul per langkah
+        const intervalTime = 100; // Waktu interval (0.5 detik)
+
+        function typeWriter() {
+            if (index < message.length) {
+                const end = Math.min(index + charsPerStep, message.length);
+                
+                // KEMBALI MENGGUNAKAN textContent (lebih aman dan bersih)
+                typedMessageElement.textContent += message.substring(index, end); 
+                
+                index = end;
+                setTimeout(typeWriter, intervalTime);
+            } else {
+                toPage5Btn.classList.remove('hidden');
+            }
+        }
+
+        function startTypingEffect() {
+            // KEMBALI MENGGUNAKAN textContent
+            typedMessageElement.textContent = ''; // Kosongkan
+            index = 0;
+            typeWriter();
+        }
+        // --- DATA FOTO SLIDESHOW ---
+        // GANTI URL DI BAWAH INI DENGAN LINK FOTO 9:16 MILIK ANDA
+        const slideImages = [
+            "1.jpg",
+            "5.jpg",
+            "2.jpg", 
+            "3.jpg",
+            "6.jpg",
+            "4.jpg",
+            "9.jpg",
+            "7.jpg",
+            "8.jpg"// Tambahkan atau kurangi sesuai kebutuhan
+        ];
+
+        const slideshowContainer = document.getElementById('slideshow-container');
+        let slideIndex = 0;
+        const slideIntervalTime = 2000; // Ganti foto setiap 4 detik (4000 ms)
+
+        function initializeSlideshow() {
+            // 1. Masukkan semua gambar ke HTML
+            slideImages.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.classList.add('slide-image');
+                if (index === 0) {
+                    img.classList.add('active'); // Foto pertama aktif
+                }
+                slideshowContainer.appendChild(img);
+            });
+        }
+
+        function showSlides() {
+            const slides = document.querySelectorAll('.slide-image');
+            
+            // Sembunyikan semua
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Hitung indeks berikutnya
+            slideIndex++;
+            if (slideIndex > slides.length) {
+                slideIndex = 1; // Kembali ke awal
+            }
+            
+            // Tampilkan yang aktif
+            slides[slideIndex - 1].classList.add('active');
+            
+            // Ulangi
+            setTimeout(showSlides, slideIntervalTime); 
+        }
+
+        // Jalankan inisialisasi ketika halaman 5 dimuat
+        function startSlideshow() {
+             // Pastikan slideshow belum diinisialisasi untuk menghindari duplikasi
+            if (slideshowContainer.children.length === 0) {
+                initializeSlideshow();
+                // Tunggu sebentar sebelum memulai slideshow agar semua gambar termuat
+                setTimeout(showSlides, slideIntervalTime);
+            }
+        }
+        
+        // Perbarui fungsi goToPage untuk memulai slideshow saat masuk ke Halaman 5
+        function goToPage(pageNumber) {
+            pages.forEach(p => p.classList.add('hidden'));
+            pages[pageNumber - 1].classList.remove('hidden');
+            currentPage = pageNumber;
+            
+            if (pageNumber === 4) {
+                startTypingEffect();
+            } else if (pageNumber === 5) { // JIKA MASUK HALAMAN 5
+                startSlideshow();
+            }
+        }
+
+    </script>
+</body>
+</html>
